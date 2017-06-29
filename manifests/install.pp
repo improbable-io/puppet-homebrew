@@ -50,6 +50,17 @@ class homebrew::install {
     }
   }
 
+  $brew_sys_chmod_folders = [
+    '/usr/local/bin',
+    '/usr/local/include',
+  ]
+  $brew_sys_chmod_folders.each | String $brew_sys_chmod_folder | {
+    exec { "chmod-${brew_sys_chmod_folder}":
+      command => "/bin/chmod -R 775 ${brew_sys_chmod_folder}",
+      unless  => "/usr/bin/stat -f '%OLp' ${brew_sys_chmod_folder} | /usr/bin/grep -w '775'",
+    }
+  }
+
   $brew_folders = [
     '/usr/local/opt',
     '/usr/local/Homebrew',
