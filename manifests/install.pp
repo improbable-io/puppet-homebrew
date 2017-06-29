@@ -20,24 +20,44 @@ class homebrew::install {
   #   }
   # }
   
-  file { 'brew-usr-local-bin':
-    ensure => directory,
-    path   => '/usr/local/bin',
-  }
-  exec { 'set-usr-local-bin-directory-inherit':
-    command     => "/bin/chmod -R +a 'group:staff allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' /usr/local/bin",
-    refreshonly => true,
+  # $brew_folders = [
+  #   '/usr/local',
+  #   '/usr/local/bin',
+  #   '/usr/local/Cellar',
+  #   '/usr/local/etc',
+  #   '/usr/local/Frameworks',
+  #   '/usr/local/include',
+  #   '/usr/local/lib',
+  #   '/usr/local/lib/pkgconfig',
+  #   '/usr/local/opt',
+  #   '/usr/local/share',
+  #   '/usr/local/share/doc',
+  #   '/usr/local/share/man',
+  #   '/usr/local/var',
+  # ]
+
+  $brew_sys_folders = [
+    '/usr/local/bin',
+    '/usr/local/var',
+  ]
+  $brew_sys_folders.each | String $brew_sys_folder | {
+    file { "brew-${$brew_sys_folder}":
+      ensure => directory,
+      path   => $brew_sys_folder,
+    }
   }
 
   $brew_folders = [
     '/usr/local/Homebrew',
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
+    '/usr/local/var/homebrew',
   ]
   file { $brew_folders:
-    ensure => directory,
-    owner  => $homebrew::user,
-    group  => $homebrew::group,
+    ensure  => directory,
+    owner   => $homebrew::user,
+    group   => $homebrew::group,
+    require => File["brew-${brew_sys_folder}"],
   }
 
   if $homebrew::multiuser == true {
