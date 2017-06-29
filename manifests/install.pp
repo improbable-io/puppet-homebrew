@@ -41,9 +41,10 @@ class homebrew::install {
     '/usr/local/var',
   ]
   $brew_sys_folders.each | String $brew_sys_folder | {
-    file { "brew-${brew_sys_folder}":
-      ensure => directory,
-      path   => $brew_sys_folder,
+    if !defined(File[$brew_sys_folder]) {
+      file { $brew_sys_folder:
+        ensure => directory,
+      }
     }
   }
 
@@ -54,10 +55,9 @@ class homebrew::install {
     '/usr/local/var/homebrew',
   ]
   file { $brew_folders:
-    ensure  => directory,
-    owner   => $homebrew::user,
-    group   => $homebrew::group,
-    require => File["brew-${brew_sys_folder}"],
+    ensure => directory,
+    owner  => $homebrew::user,
+    group  => $homebrew::group,
   }
 
   if $homebrew::multiuser == true {
