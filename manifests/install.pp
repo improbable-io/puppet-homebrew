@@ -20,25 +20,43 @@ class homebrew::install {
   #   }
   # }
   
+  file { 'brew-usr-local-bin':
+    ensure => directory,
+    path   => '/usr/local/bin',
+  }
+  exec { 'set-usr-local-bin-directory-inherit':
+    command     => "/bin/chmod -R +a 'group:staff allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' /usr/local/bin",
+    refreshonly => true,
+  }
+
   $brew_folders = [
     '/usr/local/Homebrew',
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
   ]
-
   file { $brew_folders:
     ensure => directory,
     owner  => $homebrew::user,
     group  => $homebrew::group,
   }
+
   if $homebrew::multiuser == true {
     $brew_folders.each | String $brew_folder | {
+      exec { "chmod-${brew_folder}":
+        command => "/bin/chmod -R 775 ${brew_folder}",
+        unless  => "/usr/bin/stat -f '%OLp' ${brew_folder} | /usr/bin/grep -w '775'",
+      }
+      exec { "chown-${brew_folder}":
+        command => "/usr/sbin/chown -R :${homebrew::group} ${brew_folder}",
+        unless  => "/usr/bin/stat -f '%Su' ${brew_folder} | /usr/bin/grep -w '${homebrew::group}'",
+      }
       exec { "set-${brew_folder}-directory-inherit":
         command     => "/bin/chmod -R +a 'group:${homebrew::group} allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' ${brew_folder}",
         refreshonly => true,
       }
     }
   }
+
   exec { 'install-homebrew':
     cwd       => '/usr/local/Homebrew',
     command   => "/usr/bin/su ${homebrew::user} -c '/bin/bash -o pipefail -c \"/usr/bin/curl -skSfL https://github.com/homebrew/brew/tarball/master | /usr/bin/tar xz -m --strip 1\"'",
