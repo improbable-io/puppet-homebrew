@@ -21,17 +21,25 @@ class homebrew::install {
   # }
   
   $brew_sys_folders = [
-    '/usr/local',
     '/usr/local/bin',
     '/usr/local/etc',
     '/usr/local/Frameworks',
     '/usr/local/include',
     '/usr/local/lib',
     '/usr/local/lib/pkgconfig',
-    '/usr/local/opt',
+    # '/usr/local/opt',
     '/usr/local/share',
     '/usr/local/share/doc',
+    '/usr/local/share/info',
     '/usr/local/share/man',
+    '/usr/local/share/man1',
+    '/usr/local/share/man2',
+    '/usr/local/share/man3',
+    '/usr/local/share/man4',
+    '/usr/local/share/man5',
+    '/usr/local/share/man6',
+    '/usr/local/share/man7',
+    '/usr/local/share/man8',
     '/usr/local/var',
   ]
   $brew_sys_folders.each | String $brew_sys_folder | {
