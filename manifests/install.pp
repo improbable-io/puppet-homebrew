@@ -30,7 +30,7 @@ class homebrew::install {
     ensure => directory,
     owner  => $homebrew::user,
     group  => $homebrew::group,
-  } ->
+  }
   if $homebrew::multiuser == true {
     $brew_folders.each | String $brew_folder | {
       exec { "set-${brew_folder}-directory-inherit":
