@@ -22,11 +22,11 @@ class homebrew::install {
   if $homebrew::multiuser == true {
     exec { 'chmod-brew':
       command => '/bin/chmod -R 775 /usr/local',
-      unless  => '/usr/bin/stat -f "%OLp" /usr/local | grep -w "775"',
+      unless  => '/usr/bin/stat -f "%OLp" /usr/local | /usr/bin/grep -w "775"',
     }
     exec { 'chown-brew':
-      command => "/usr/sbin/chown -R ${homebrew::user}:${homebrew::group} /usr/local",
-      unless  => "/usr/bin/stat -f '%Su' /usr/local | grep -w '${homebrew::user}' && stat -f '%Su' /usr/local | grep -w '${homebrew::group}'",
+      command => "/usr/sbin/chown -R :${homebrew::group} /usr/local",
+      unless  => "/usr/bin/stat -f '%Su' /usr/local | /usr/bin/grep -w '${homebrew::group}'",
     }
   }
 
