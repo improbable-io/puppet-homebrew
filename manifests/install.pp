@@ -53,6 +53,9 @@ class homebrew::install {
   $brew_sys_chmod_folders = [
     '/usr/local/bin',
     '/usr/local/include',
+    '/usr/local/share',
+    '/usr/local/lib',
+    '/usr/local/etc',
   ]
   $brew_sys_chmod_folders.each | String $brew_sys_chmod_folder | {
     exec { "chmod-${brew_sys_chmod_folder}":
