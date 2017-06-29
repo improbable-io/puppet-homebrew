@@ -1,31 +1,9 @@
 class homebrew::install {
 
-  $brew_folders = [
-                    '/usr/local',
-                    '/usr/local/bin',
-                    '/usr/local/Cellar',
-                    '/usr/local/etc',
-                    '/usr/local/Frameworks',
-                    '/usr/local/include',
-                    '/usr/local/lib',
-                    '/usr/local/lib/pkgconfig',
-                    '/usr/local/opt',
-                    '/usr/local/share',
-                    '/usr/local/share/doc',
-                    '/usr/local/share/man',
-                    '/usr/local/var',
-                  ]
-
-  file { $brew_folders:
-    ensure => directory,
-    group  => $homebrew::group,
-    mode   => '0775',
-  } ->
   file { '/usr/local/Homebrew':
     ensure => directory,
     owner  => $homebrew::user,
     group  => $homebrew::group,
-    mode   => '0775',
   } ->
   exec { 'install-homebrew':
     cwd       => '/usr/local/Homebrew',
@@ -39,7 +17,17 @@ class homebrew::install {
     target => '/usr/local/Homebrew/bin/brew',
     owner  => $homebrew::user,
     group  => $homebrew::group,
-    mode   => '0775',
+  }
+
+  if $homebrew::multiuser == true {
+    exec { 'chmod-brew':
+      command => 'chmod 775 -R /usr/local',
+      unless  => "stat -f '%OLp' /usr/local | grep -w '775'",
+    }
+    exec { 'chown-brew':
+      command => "chown ${homebrew::user}:${homebrew::group} -R /usr/local",
+      unless  => "stat -f '%Su' /usr/local | grep -w '${homebrew::user}' && stat -f '%Su' /usr/local | grep -w '${homebrew::group}'",
+    }
   }
 
 }
