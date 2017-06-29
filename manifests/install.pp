@@ -27,7 +27,6 @@ class homebrew::install {
     '/usr/local/include',
     '/usr/local/lib',
     '/usr/local/lib/pkgconfig',
-    # '/usr/local/opt',
     '/usr/local/share',
     '/usr/local/share/doc',
     '/usr/local/share/info',
@@ -51,6 +50,7 @@ class homebrew::install {
   }
 
   $brew_folders = [
+    '/usr/local/opt',
     '/usr/local/Homebrew',
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
