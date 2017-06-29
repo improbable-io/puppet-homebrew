@@ -41,7 +41,7 @@ class homebrew::install {
     '/usr/local/var',
   ]
   $brew_sys_folders.each | String $brew_sys_folder | {
-    file { "brew-${$brew_sys_folder}":
+    file { "brew-${brew_sys_folder}":
       ensure => directory,
       path   => $brew_sys_folder,
     }
