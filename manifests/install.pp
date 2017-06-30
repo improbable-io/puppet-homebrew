@@ -43,6 +43,9 @@ class homebrew::install {
     '/usr/local/include',
     '/usr/local/lib',
     '/usr/local/etc',
+    '/usr/local/Frameworks',
+    '/usr/local/var',
+
   ]
   $brew_sys_chmod_folders.each | String $brew_sys_chmod_folder | {
     exec { "brew-chmod-sys-${brew_sys_chmod_folder}":
@@ -77,6 +80,8 @@ class homebrew::install {
   }
 
   if $homebrew::multiuser == true {
+
+
     $brew_folders.each | String $brew_folder | {
       exec { "chmod-${brew_folder}":
         command => "/bin/chmod -R 775 ${brew_folder}",
