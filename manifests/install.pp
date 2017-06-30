@@ -55,7 +55,6 @@ class homebrew::install {
     '/usr/local/include',
     '/usr/local/lib',
     '/usr/local/etc',
-    '/usr/local/share',
   ]
   $brew_sys_chmod_folders.each | String $brew_sys_chmod_folder | {
     exec { "brew-chmod-sys-${brew_sys_chmod_folder}":
@@ -72,13 +71,11 @@ class homebrew::install {
     '/usr/local/var/homebrew',
     '/usr/local/share',
   ]
-  $brew_folders.each | String $brew_folder | {
-    file { "chowm-brew-${brew_folder}":
-      ensure => directory,
-      path   => $brew_folder,
-      owner  => $homebrew::user,
-      group  => $homebrew::group,
-    }
+  file { $brew_folders:
+    ensure => directory,
+    path   => $brew_folder,
+    owner  => $homebrew::user,
+    group  => $homebrew::group,
   }
 
   if $homebrew::multiuser == true {
