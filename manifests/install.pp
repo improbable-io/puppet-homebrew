@@ -53,12 +53,12 @@ class homebrew::install {
   $brew_sys_chmod_folders = [
     '/usr/local/bin',
     '/usr/local/include',
-    '/usr/local/share',
     '/usr/local/lib',
     '/usr/local/etc',
+    '/usr/local/share',
   ]
   $brew_sys_chmod_folders.each | String $brew_sys_chmod_folder | {
-    exec { "chmod-${brew_sys_chmod_folder}":
+    exec { "brew-chmod-sys-${brew_sys_chmod_folder}":
       command => "/bin/chmod -R 775 ${brew_sys_chmod_folder}",
       unless  => "/usr/bin/stat -f '%OLp' ${brew_sys_chmod_folder} | /usr/bin/grep -w '775'",
     }
@@ -70,8 +70,9 @@ class homebrew::install {
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
     '/usr/local/var/homebrew',
+    '/usr/local/share',
   ]
-  file { $brew_folders:
+  file { "brew-chmod-${brew_folders}":
     ensure => directory,
     owner  => $homebrew::user,
     group  => $homebrew::group,
@@ -82,13 +83,14 @@ class homebrew::install {
       exec { "chmod-${brew_folder}":
         command => "/bin/chmod -R 775 ${brew_folder}",
         unless  => "/usr/bin/stat -f '%OLp' ${brew_folder} | /usr/bin/grep -w '775'",
+        notify  => Exec["set-${brew_folder}-directory-inherit"]
       }
       exec { "chown-${brew_folder}":
         command => "/usr/sbin/chown -R :${homebrew::group} ${brew_folder}",
         unless  => "/usr/bin/stat -f '%Su' ${brew_folder} | /usr/bin/grep -w '${homebrew::group}'",
       }
       exec { "set-${brew_folder}-directory-inherit":
-        command     => "/bin/chmod -R +a 'group:${homebrew::group} allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' ${brew_folder}",
+        command     => "/bin/chmod -R +a '${homebrew::group}:allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' ${brew_folder}",
         refreshonly => true,
       }
     }
