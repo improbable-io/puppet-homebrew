@@ -58,7 +58,6 @@ class homebrew::install {
     '/usr/local/Cellar',
     '/usr/local/var/homebrew',
     '/usr/local/share',
-    '/usr/local/share',
     '/usr/local/share/doc',
     '/usr/local/share/info',
     '/usr/local/share/man',
