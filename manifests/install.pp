@@ -41,7 +41,6 @@ class homebrew::install {
 
   $brew_folders = [
     '/usr/local/opt',
-    
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
     '/usr/local/var/homebrew',
@@ -65,7 +64,7 @@ class homebrew::install {
         ensure       => directory,
         owner        => $homebrew::user,
         group        => $homebrew::group,
-        mode         => '0644',
+        mode         => '0775',
         recurselimit => 1 ,
         recurse      => true
     }
