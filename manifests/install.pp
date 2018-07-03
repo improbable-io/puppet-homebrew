@@ -59,27 +59,21 @@ class homebrew::install {
     '/usr/local/share/man8',
   ]
 
-  file { $brew_folders:
+
+  if $homebrew::multiuser == true {
+    file { $brew_folders:
+        ensure       => directory,
+        owner        => $homebrew::user,
+        group        => $homebrew::group,
+        mode         => '0775',
+        recurselimit => 1 ,
+        recurse      => true
+    }
+  } else {
+    file { $brew_folders:
     ensure => directory,
     owner  => $homebrew::user,
     group  => $homebrew::group,
-  }
-
-  if $homebrew::multiuser == true {
-    $brew_folders.each | String $brew_folder | {
-      exec { "chmod-${brew_folder}":
-        command => "/bin/chmod -R 775 ${brew_folder}",
-        unless  => "/usr/bin/stat -f '%OLp' '${brew_folder}' | /usr/bin/grep -w '775'",
-        notify  => Exec["set-${brew_folder}-directory-inherit"]
-      }
-      exec { "chown-${brew_folder}":
-        command => "/usr/sbin/chown -R :${homebrew::group} ${brew_folder}'",
-        unless  => "/usr/bin/stat -f '%Sg' '${brew_folder}' | /usr/bin/grep -w '${homebrew::group}'",
-      }
-      exec { "set-${brew_folder}-directory-inherit":
-        command     => "/bin/chmod -R +a '${homebrew::group}:allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' ${brew_folder}",
-        refreshonly => true,
-      }
     }
   }
 
