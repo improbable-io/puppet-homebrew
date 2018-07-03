@@ -66,7 +66,7 @@ class homebrew::install {
         owner        => $homebrew::user,
         group        => $homebrew::group,
         mode         => '0775',
-        recurselimit => 2 ,
+        recurselimit => 1 ,
         recurse      => true
     }
   } else {
