@@ -59,19 +59,20 @@ class homebrew::install {
     '/usr/local/share/man8',
   ]
 
-  file { $brew_folders:
-    ensure => directory,
-    owner  => $homebrew::user,
-    group  => $homebrew::group,
-  }
 
   if $homebrew::multiuser == true {
     file { $brew_folders:
         ensure => directory,
         owner  => $homebrew::user,
         group  => $homebrew::group,
-        mode    => '0755',
+        mode   => '0755',
     }
+  } else {
+    file { $brew_folders:
+    ensure => directory,
+    owner  => $homebrew::user,
+    group  => $homebrew::group,
+  }
 
   }
 
