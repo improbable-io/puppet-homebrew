@@ -62,12 +62,10 @@ class homebrew::install {
 
   if $homebrew::multiuser == true {
     file { '/usr/local/Homebrew':
-        ensure       => directory,
-        owner        => $homebrew::user,
-        group        => $homebrew::group,
-        mode         => '0775',
-        recurselimit => 1 ,
-        recurse      => true
+        ensure => directory,
+        owner  => $homebrew::user,
+        group  => $homebrew::group,
+        mode   => '0775',
     }
     file { $brew_folders:
         ensure       => directory,
