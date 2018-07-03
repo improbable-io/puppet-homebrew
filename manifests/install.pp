@@ -78,7 +78,7 @@ class homebrew::install {
       }
       exec { "set-${brew_folder}-directory-inherit":
         command     => "/bin/chmod -R +a '${homebrew::group}:allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity,file_inherit,directory_inherit' ${brew_folder}",
-        refreshonly => true,
+        #refreshonly => true,
       }
     }
   }
