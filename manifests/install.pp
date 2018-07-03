@@ -56,6 +56,7 @@ class homebrew::install {
     '/usr/local/share/man6',
     '/usr/local/share/man7',
     '/usr/local/share/man8',
+    'usr/local/var/homebrew/locks',
   ]
 
 
