@@ -44,6 +44,7 @@ class homebrew::install {
     '/usr/local/Caskroom',
     '/usr/local/Cellar',
     '/usr/local/var/homebrew',
+    '/usr/local/Homebrew/Library/Taps/',
     '/usr/local/share',
     '/usr/local/share/doc',
     '/usr/local/share/info',
